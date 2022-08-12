@@ -11,7 +11,13 @@ public class IntegerListImpl implements IntegerList {
 //    public IntegerListImpl(int length) {
 //        integerList = new Integer[length];
 //    }
-
+private static void sort(Integer[] arr) {
+//    sortBubble(arr);
+//    sortSelection(arr);
+//    sortInsertion(arr);
+    quickSort(arr, 0, arr.length - 1);
+//    mergeSort(arr);
+}
     private static void swapElements(Integer[] arr, int indexA, int indexB) {
         int tmp = arr[indexA];
         arr[indexA] = arr[indexB];
@@ -128,16 +134,11 @@ public class IntegerListImpl implements IntegerList {
         return false;
     }
     private void grow() {
-        if (size==integerList.length) {
-            Integer[] newList = new Integer[integerList.length*3/2];
-            System.arraycopy(integerList,0, newList,0,integerList.length);
-            integerList = newList;
-        }
+        integerList = Arrays.copyOf(integerList, size + size / 2);
     }
-
     @Override
     public Integer add(Integer item) {
-        grow();
+        validateSize();
         validateItem(item);
         integerList[size++] = item;
         return item;
@@ -145,7 +146,7 @@ public class IntegerListImpl implements IntegerList {
 
     @Override
     public Integer add(int index, Integer item) {
-        grow();
+        validateSize();
         validateIndex(index);
         validateItem(item);
         if (index == size) {
@@ -191,7 +192,7 @@ public class IntegerListImpl implements IntegerList {
     @Override
     public boolean contains(Integer item) {
         Integer[] copyOfList = toArray();
-        quickSort(copyOfList,0,copyOfList.length-1);
+        sort(copyOfList);
         return binarySearch(copyOfList,item);
     }
 
@@ -257,11 +258,11 @@ public class IntegerListImpl implements IntegerList {
         }
     }
 
-//    private void validateSize() {
-//        if (size == integerList.length) {
-//            throw new ListIsFullException();
-//        }
-//    }
+    private void validateSize() {
+        if (size == integerList.length) {
+            grow();
+        }
+    }
 
     private void validateIndex(int index) {
         if (index < 0 || index > size) {
